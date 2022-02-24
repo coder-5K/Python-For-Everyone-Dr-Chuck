@@ -1,0 +1,33 @@
+# To run this, download the BeautifulSoup zip file
+# http://www.py4e.com/code3/bs4.zip
+# and unzip it in the same directory as this file
+
+import urllib.request, urllib.parse, urllib.error               # imports the urllib library
+from bs4 import BeautifulSoup                                   # imports the beautifulsoup library from the bs4 folder
+import ssl                                                      # imports the ssl library
+
+# Ignore SSL certificate errors
+ctx = ssl.create_default_context()
+ctx.check_hostname = False
+ctx.verify_mode = ssl.CERT_NONE
+
+url = input('Enter - ')                                        # 'url' variable is assigned whatever the user enters in
+count = int(input('Enter count: '))                            # 'count' variable is assigned the number of counts the user enters
+position = int(input('Enter position: ')) - 1                  # 'position' variable is assigned the number of positions the user puts in
+                                                               #  - 1 in the above because when user types 18 you have to subtract 1 because it starts at 0
+html = urllib.request.urlopen(url, context=ctx).read()         # urllib reads what 'url' the users puts in and makes a connection
+soup = BeautifulSoup(html, 'html.parser')                      # 'soup' variable is assigned whatever beautifulsoup changes the 'html' variable to
+#contents_list = []                                            # this is a list to keeps track if the info in the loop
+#print(soup)
+
+tags = soup('a')                                               # Retrieve all of the anchor tags in the 'soup' variable
+
+for i in range(count):                                         # for loop that will go through the loop as many times as the user enters for the 'count' variable
+    link = tags[position].get('href', None)                    # 'link' varaible is assigned the href link in the [position] number of what the user types in
+    print('Retreiving: ', link)                                # Displays 'Retreiving: and whatever the link that the above line finds
+    #contents_list.append(tags[position].contents[0])          # Keeps track of the "contents" or names in a list
+    html = urllib.request.urlopen(link, context=ctx).read()    # 'html' variable is changed to this new URL and urllib makes a connection to it
+    soup = BeautifulSoup(html, 'html.parser')                  # 'soup' variable is changed to what BS changes the above 'html' variable to
+    tags = soup('a')                                           # 'tags' variable stores all the NEW 'a' tags
+                                                               # for loop starts over again
+#print(contents_list)
